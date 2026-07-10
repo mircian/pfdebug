@@ -4,7 +4,7 @@
  * fallback. Values are stored canonically in cm the moment they're parsed —
  * display-only conversion everywhere else (BUILD.md §5).
  */
-import { useEffect, useState } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import Illustration from "~/components/Illustration";
 import { Md } from "~/components/Md";
 import type { Option } from "~/components/QuestionScreens";
@@ -34,12 +34,15 @@ function FootMeasure({
   onCm: (cm: number | null) => void;
 }) {
   const unitLabel = units === "imperial" ? "in" : "cm";
-  // Local text state so typing isn't fought; re-derived when units flip.
+  // Local text state so typing isn't fought; re-derived when the units flip
+  // or the canonical value changes externally (calibrator) — but never while
+  // the user is mid-keystroke in this field.
   const [text, setText] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
   useEffect(() => {
+    if (document.activeElement === inputRef.current) return;
     setText(cm === null ? "" : String(displayLength(cm, units).value));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [units]);
+  }, [units, cm]);
 
   function handleInput(e: Event) {
     const raw = (e.target as HTMLInputElement).value;
@@ -61,6 +64,7 @@ function FootMeasure({
       <div style="display:flex;align-items:center;gap:0.6rem;max-width:14rem">
         <input
           id={id}
+          ref={inputRef}
           type="number"
           inputMode="decimal"
           min="0"

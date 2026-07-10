@@ -108,7 +108,9 @@ export function MultiChoice<V extends string>({
   onContinue: () => void;
   continueLabel?: string;
 }) {
-  const canContinue = values.length > 0 || (noneLabel ? noneSelected : true);
+  // At least one answer always — the "none" row is the explicit empty answer
+  // where the question offers one.
+  const canContinue = values.length > 0 || (noneLabel !== undefined && noneSelected);
 
   function toggle(v: V) {
     const next = values.includes(v)

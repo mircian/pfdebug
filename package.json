@@ -9,7 +9,10 @@
     "preview": "astro preview",
     "test": "vitest run",
     "test:watch": "vitest",
-    "check": "astro check"
+    "check": "astro check",
+    "smoke": "node scripts/smoke.mjs",
+    "a11y": "node scripts/a11y.mjs",
+    "og": "node scripts/generate-og.mjs"
   },
   "dependencies": {
     "@astrojs/preact": "^4.0.0",
@@ -20,7 +23,9 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@axe-core/playwright": "^4.12.1",
     "@types/qrcode": "^1.5.5",
+    "playwright": "^1.61.1",
     "typescript": "^5.6.0",
     "vitest": "^3.0.0"
   }

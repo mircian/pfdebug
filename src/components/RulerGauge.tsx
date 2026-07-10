@@ -200,6 +200,7 @@ export default function RulerGauge({
         ))}
 
         {/* asymmetry % rendered between the two pointers */}
+        {/* --flag is for bands/fills only, never text (BUILD.md §6). */}
         {asymmetryText && mid !== null && (
           <text
             x={mid}
@@ -207,7 +208,7 @@ export default function RulerGauge({
             text-anchor="middle"
             font-family="var(--font-data)"
             font-size="10"
-            fill="var(--flag)"
+            fill="var(--ink-soft)"
           >
             {asymmetryText}
           </text>
