@@ -1,0 +1,26 @@
+{
+  "name": "pfdebug",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/preact": "^4.0.0",
+    "astro": "^5.0.0",
+    "lz-string": "^1.5.0",
+    "preact": "^10.24.0",
+    "qrcode": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/qrcode": "^1.5.5",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

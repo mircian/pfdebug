@@ -1,0 +1,274 @@
+{
+  "_comment": "pfdebug decision-engine regression suite. Each case: input (matches Input schema in pfdebug-engine-spec.md) and expected (matches Result schema). All 8 must pass. Re-run after any threshold/branch change; drift from expected = regression. Fields not asserted by your test can be omitted from comparison, but the core assertions (route, flag set-states, headlineFactor, modulesInFull, alsoWorthAddressing, notes) should all hold.",
+  "cases": [
+    {
+      "id": "P1",
+      "name": "Textbook unilateral — walking ramp, weak calf + tight ankle",
+      "input": {
+        "painLocation": "inner_heel",
+        "worstWhen": ["morning_first_steps", "eases_moving"],
+        "thumbPress": "sharp_that_is_it",
+        "redFlags": [],
+        "duration": "6wk_3mo",
+        "loadChanges": ["walking_standing_event"],
+        "onFeet": "mix",
+        "bmiBand": "25_30",
+        "ageBand": "40_54",
+        "affectedFoot": "left",
+        "kneeToWall": { "left_cm": 8, "right_cm": 11, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 18, "painfulReps": 11 },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D2_composed",
+        "hedged": false,
+        "flags": {
+          "capacity": { "set": true, "label": "confirmed" },
+          "mobility": { "set": true, "subtype": "soft_tissue" },
+          "posture": { "set": false },
+          "footwear": { "set": false },
+          "loadSpike": { "set": true, "occupational": false },
+          "weightModule": false
+        },
+        "headlineFactor": "capacity",
+        "triggerLine": true,
+        "modulesInFull": ["exercise2", "load_management"],
+        "alsoWorthAddressing": [],
+        "notes": []
+      }
+    },
+    {
+      "id": "P2",
+      "name": "Fit runner in a flare — mileage spike only, tissue clean",
+      "input": {
+        "painLocation": "inner_heel",
+        "worstWhen": ["morning_first_steps", "eases_moving"],
+        "thumbPress": "sharp_that_is_it",
+        "redFlags": [],
+        "duration": "lt_6wk",
+        "loadChanges": ["training_volume_jump"],
+        "onFeet": "mix",
+        "bmiBand": "under_25",
+        "ageBand": "under_40",
+        "affectedFoot": "left",
+        "kneeToWall": { "left_cm": 12, "right_cm": 12, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 34, "painfulReps": 30 },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D5",
+        "hedged": false,
+        "flags": {
+          "capacity": { "set": false },
+          "mobility": { "set": false },
+          "posture": { "set": false },
+          "footwear": { "set": false },
+          "loadSpike": { "set": true, "occupational": false },
+          "weightModule": false
+        },
+        "headlineFactor": null,
+        "triggerLine": true,
+        "notes": []
+      }
+    },
+    {
+      "id": "P3",
+      "name": "Bilateral retail worker, BMI 31 — asymmetry dead, flag avalanche capped",
+      "input": {
+        "painLocation": "inner_heel",
+        "worstWhen": ["morning_first_steps", "worse_later"],
+        "thumbPress": "sharp_that_is_it",
+        "redFlags": [],
+        "duration": "3_12mo",
+        "loadChanges": [],
+        "onFeet": "mostly_on_feet",
+        "bmiBand": "over_30",
+        "ageBand": "55_69",
+        "affectedFoot": "both",
+        "kneeToWall": { "left_cm": 9, "right_cm": 9, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 10, "painfulReps": 10 },
+        "footprint": "flat",
+        "shoes": { "innerEdgeWear": true, "deadCushion": true }
+      },
+      "expected": {
+        "route": "D2_composed",
+        "hedged": false,
+        "flags": {
+          "capacity": { "set": true, "label": "unconfirmed_bilateral" },
+          "mobility": { "set": true, "subtype": "soft_tissue" },
+          "posture": { "set": true },
+          "footwear": { "set": true },
+          "loadSpike": { "set": false },
+          "weightModule": true
+        },
+        "headlineFactor": "capacity",
+        "triggerLine": false,
+        "modulesInFull": ["exercise2", "footwear_replace"],
+        "alsoWorthAddressing": ["posture_insole", "weight"],
+        "notes": []
+      }
+    },
+    {
+      "id": "P4",
+      "name": "Joint-limited office worker — Ex2 suppressed, physio headlined",
+      "input": {
+        "painLocation": "inner_heel",
+        "worstWhen": ["morning_first_steps"],
+        "thumbPress": "sharp_that_is_it",
+        "redFlags": [],
+        "duration": "6wk_3mo",
+        "loadChanges": ["new_or_flatter_shoes"],
+        "onFeet": "mix",
+        "bmiBand": "25_30",
+        "ageBand": "40_54",
+        "affectedFoot": "right",
+        "kneeToWall": { "left_cm": 10, "right_cm": 7, "sensationLeft": "stretch", "sensationRight": "front_pinch" },
+        "heelRaise": { "goodReps": 22, "painfulReps": 20 },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D2_composed",
+        "hedged": false,
+        "flags": {
+          "capacity": { "set": false },
+          "mobility": { "set": true, "subtype": "joint" },
+          "posture": { "set": false },
+          "footwear": { "set": false },
+          "loadSpike": { "set": true, "occupational": false },
+          "weightModule": false
+        },
+        "headlineFactor": "mobility_joint_referral",
+        "triggerLine": true,
+        "modulesInFull": ["load_management"],
+        "alsoWorthAddressing": [],
+        "notes": [],
+        "_assert": "Exercise 2 must NOT appear in modulesInFull; the joint referral is the headline action."
+      }
+    },
+    {
+      "id": "P5",
+      "name": "Acute-flare nurse — painful side skipped, good side in range, mobility headlines",
+      "input": {
+        "painLocation": "inner_heel",
+        "worstWhen": ["morning_first_steps", "eases_moving"],
+        "thumbPress": "sharp_that_is_it",
+        "redFlags": [],
+        "duration": "lt_6wk",
+        "loadChanges": ["walking_standing_event"],
+        "onFeet": "mostly_on_feet",
+        "bmiBand": "25_30",
+        "ageBand": "under_40",
+        "affectedFoot": "left",
+        "kneeToWall": { "left_cm": 9, "right_cm": 11, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 21, "painfulSkipped": true },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D2_composed",
+        "hedged": false,
+        "flags": {
+          "capacity": { "set": false },
+          "mobility": { "set": true, "subtype": "soft_tissue" },
+          "posture": { "set": false },
+          "footwear": { "set": false },
+          "loadSpike": { "set": true, "occupational": true },
+          "weightModule": false
+        },
+        "headlineFactor": "mobility_soft_tissue",
+        "triggerLine": true,
+        "modulesInFull": ["exercise2", "load_management"],
+        "alsoWorthAddressing": [],
+        "notes": ["skipped_capacity"],
+        "_assert": "Good side 21 >= floor(under_40)=20 ⇒ capacity NOT set, NOT headlined; skipped_capacity note present."
+      }
+    },
+    {
+      "id": "P6",
+      "name": "Back-of-heel runner — soft-decline before physical tests",
+      "input": {
+        "painLocation": "back_of_heel",
+        "worstWhen": ["worse_later"],
+        "thumbPress": "nothing",
+        "redFlags": [],
+        "duration": "6wk_3mo",
+        "loadChanges": ["training_volume_jump"],
+        "onFeet": "mix",
+        "bmiBand": "under_25",
+        "ageBand": "under_40",
+        "affectedFoot": "left",
+        "kneeToWall": { "left_cm": 12, "right_cm": 12, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 28, "painfulReps": 27 },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D0_soft",
+        "_assert": "painLocation back_of_heel routes to D0_soft regardless of other inputs; in-product, short-circuit before Part B physical tests."
+      }
+    },
+    {
+      "id": "P7",
+      "name": "Diabetic bilateral, reduced foot sensation — red-flag gate",
+      "input": {
+        "painLocation": "center_heel",
+        "worstWhen": ["morning_first_steps", "constant"],
+        "thumbPress": "tender_not_the_pain",
+        "redFlags": ["diabetes_reduced_sensation", "night_or_rest_pain"],
+        "duration": "3_12mo",
+        "loadChanges": [],
+        "onFeet": "mix",
+        "bmiBand": "over_30",
+        "ageBand": "55_69",
+        "affectedFoot": "both",
+        "kneeToWall": { "left_cm": 10, "right_cm": 10, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 12, "painfulReps": 12 },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D0",
+        "_assert": "Any redFlags ⇒ D0 immediately; no flags computed, no profile."
+      }
+    },
+    {
+      "id": "P8",
+      "name": "Clean chronic case, no trigger — legitimate D4",
+      "input": {
+        "painLocation": "inner_heel",
+        "worstWhen": ["morning_first_steps", "eases_moving"],
+        "thumbPress": "sharp_that_is_it",
+        "redFlags": [],
+        "duration": "3_12mo",
+        "loadChanges": [],
+        "onFeet": "mix",
+        "bmiBand": "under_25",
+        "ageBand": "40_54",
+        "affectedFoot": "left",
+        "kneeToWall": { "left_cm": 11, "right_cm": 11, "sensationLeft": "stretch", "sensationRight": "stretch" },
+        "heelRaise": { "goodReps": 24, "painfulReps": 23 },
+        "footprint": "neutral",
+        "shoes": { "innerEdgeWear": false, "deadCushion": false }
+      },
+      "expected": {
+        "route": "D4",
+        "hedged": false,
+        "flags": {
+          "capacity": { "set": false },
+          "mobility": { "set": false },
+          "posture": { "set": false },
+          "footwear": { "set": false },
+          "loadSpike": { "set": false },
+          "weightModule": false
+        },
+        "headlineFactor": null,
+        "triggerLine": false,
+        "notes": [],
+        "_assert": "No maintaining factor, no contributor, no load spike ⇒ D4 (distinct from P2's D5 by exactly the load-spike flag)."
+      }
+    }
+  ]
+}
