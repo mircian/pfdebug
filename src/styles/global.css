@@ -1,0 +1,433 @@
+/* pfdebug — instrument aesthetic. The product is a measuring instrument;
+   the motif is measuring-tape tick marks (BUILD.md §6). */
+
+:root {
+  --paper: #fafaf7;
+  --ink: #1f2e35;
+  --ink-soft: #5c6b72;
+  --mark: #0e7c6b;
+  --flag: #c08a2d;
+  --tissue: #b8503e; /* illustrations only */
+  --stop: #a6402f; /* the red-flag / referral page only */
+
+  --font-display: "Bricolage Grotesque", system-ui, sans-serif;
+  --font-body: "Public Sans", system-ui, sans-serif;
+  --font-data: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Scale ratio 1.25 on a 17px body. */
+  --text-sm: 0.8125rem;
+  --text-base: 1.0625rem; /* 17px */
+  --text-lg: 1.328rem;
+  --text-xl: 1.66rem;
+  --text-2xl: 2.076rem;
+  --text-3xl: 2.594rem;
+
+  --radius: 6px;
+  --border: 2px solid var(--ink);
+  --touch: 48px;
+  --maxw: 44rem;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 106.25%; /* 17px base — people read instructions at arm's length */
+  line-height: 1.6;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+  width: 100%;
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 4rem;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 0.6em;
+  letter-spacing: -0.01em;
+}
+
+h1 {
+  font-size: var(--text-3xl);
+}
+h2 {
+  font-size: var(--text-xl);
+}
+h3 {
+  font-size: var(--text-lg);
+}
+
+p {
+  margin: 0 0 1em;
+}
+
+a {
+  color: var(--mark);
+  text-underline-offset: 2px;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid var(--mark);
+  outline-offset: 2px;
+}
+
+small,
+.small {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+/* Data face: every measurement, rep count, timer, gauge label. Tabular
+   figures always. */
+.data,
+.measure {
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Measurement callouts, 40–56px. */
+.measure {
+  font-size: clamp(2.5rem, 8vw, 3.5rem);
+  line-height: 1.1;
+}
+
+/* ---- Header / wordmark ------------------------------------------------- */
+
+.site-header {
+  border-bottom: var(--border);
+  background: var(--paper);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.site-header__inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0.5rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: var(--touch);
+}
+
+.wordmark {
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-size: 1.25rem;
+  color: var(--ink);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.wordmark:hover {
+  color: var(--mark);
+}
+
+/* ---- Tick-mark dividers (never plain rules) ----------------------------- */
+
+.ticks {
+  --tick-color: var(--ink-soft);
+  height: 12px;
+  background-image: repeating-linear-gradient(
+      to right,
+      var(--tick-color) 0 1px,
+      transparent 1px 8px
+    ),
+    repeating-linear-gradient(to right, var(--tick-color) 0 1px, transparent 1px 40px);
+  background-size:
+    100% 6px,
+    100% 12px;
+  background-position:
+    bottom left,
+    bottom left;
+  background-repeat: no-repeat;
+  border-bottom: 1px solid var(--tick-color);
+  margin: 2rem 0;
+}
+
+/* ---- Buttons & inputs --------------------------------------------------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5ch;
+  min-height: var(--touch);
+  min-width: var(--touch);
+  padding: 0.5rem 1.25rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 150ms ease;
+}
+
+.btn:hover {
+  background: #f0f0ea;
+}
+
+.btn--primary {
+  background: var(--mark);
+  border-color: var(--mark);
+  color: var(--paper);
+}
+
+.btn--primary:hover {
+  background: #0a6357;
+}
+
+.btn--quiet {
+  border-color: var(--ink-soft);
+  border-width: 1px;
+  font-weight: 400;
+}
+
+.btn[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+input[type="number"],
+input[type="text"],
+select {
+  min-height: var(--touch);
+  padding: 0.4rem 0.75rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-lg);
+  width: 100%;
+}
+
+label {
+  font-weight: 600;
+}
+
+/* Choice lists (radio/checkbox cards). 48px min touch targets — people
+   operate this one-legged, holding a phone. */
+.choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  min-height: var(--touch);
+  padding: 0.65rem 0.9rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 0.6rem;
+  cursor: pointer;
+  font-weight: 400;
+  background: var(--paper);
+  transition: background-color 120ms ease;
+}
+
+.choice:hover {
+  background: #f0f0ea;
+}
+
+.choice input {
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.2rem;
+  accent-color: var(--mark);
+  flex-shrink: 0;
+}
+
+.choice--selected {
+  background: #e7f2ef;
+  border-color: var(--mark);
+}
+
+/* ---- Unit toggle (segmented) --------------------------------------------- */
+
+.unit-toggle {
+  display: inline-flex;
+  border: var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.unit-toggle button {
+  min-height: calc(var(--touch) - 8px);
+  min-width: 3.5rem;
+  border: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  padding: 0.25rem 0.75rem;
+  cursor: pointer;
+}
+
+.unit-toggle button[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* Toggling animates visible measurements in place (~200 ms). */
+.unit-anim {
+  transition: opacity 200ms ease;
+}
+
+.unit-anim--switching {
+  opacity: 0.15;
+}
+
+/* ---- Wizard progress = a ruler filling left→right ------------------------ */
+
+.progress-ruler {
+  margin: 1.25rem 0 2rem;
+}
+
+.progress-ruler svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ---- Cards / callouts ----------------------------------------------------- */
+
+.card {
+  border: var(--border);
+  border-radius: var(--radius);
+  padding: 1.25rem 1.25rem 0.75rem;
+  margin: 0 0 1.5rem;
+}
+
+.card--headline {
+  border-color: var(--mark);
+  border-width: 3px;
+}
+
+.callout {
+  border-left: 4px solid var(--flag);
+  padding: 0.25rem 0 0.25rem 1rem;
+  color: var(--ink);
+  margin: 0 0 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  border: 1px solid var(--ink-soft);
+  border-radius: var(--radius);
+  padding: 0.15rem 0.6rem;
+  margin-right: 0.5rem;
+}
+
+/* The referral page is the ONLY place --stop appears. */
+.referral h1 {
+  color: var(--stop);
+}
+
+.referral .card {
+  border-color: var(--stop);
+}
+
+/* ---- Footer ---------------------------------------------------------------- */
+
+.site-footer {
+  border-top: 1px solid var(--ink-soft);
+  margin-top: 3rem;
+}
+
+.site-footer__inner {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 2.5rem;
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+}
+
+.site-footer a {
+  color: var(--ink-soft);
+}
+
+/* ---- Illustration placeholders --------------------------------------------- */
+
+.illo {
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  background: var(--paper);
+  padding: 1rem;
+  margin: 0 0 1.5rem;
+}
+
+.illo figcaption {
+  font-size: var(--text-sm);
+  color: var(--ink-soft);
+  margin-top: 0.5rem;
+}
+
+/* ---- Motion ------------------------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---- Utility ------------------------------------------------------------------ */
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.stack-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 1.5rem 0;
+}

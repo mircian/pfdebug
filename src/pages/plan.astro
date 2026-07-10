@@ -1,0 +1,10 @@
+---
+import Base from "~/layouts/Base.astro";
+import PlanApp from "~/islands/plan/PlanApp";
+---
+
+<Base title="pfdebug — your plan">
+  {/* The result lives in the URL fragment, which only the client can read —
+      the island renders client-only by design. */}
+  <PlanApp client:only="preact" />
+</Base>

@@ -1,0 +1,80 @@
+---
+import "~/styles/global.css";
+import "~/styles/print.css";
+import UnitToggle from "~/components/UnitToggle";
+import { legal } from "~/copy/copy";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const {
+  title,
+  description = "A 15-minute self-check for heel pain — it works out what's actually driving it and gives you three exercises. Free, no signup.",
+} = Astro.props;
+const ogImage = new URL("/og.png", Astro.site ?? Astro.url);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- One excellent static OG card for all shares. Personalized results
+         live only in URL fragments, which never reach a server — so there is
+         deliberately no per-result OG image (BUILD.md §4/§7). -->
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Public+Sans:ital,wght@0,400;0,600;1,400&display=swap"
+    />
+
+    <!-- Privacy-light analytics (Plausible-class), manual pageviews so URL
+         fragments are NEVER captured — the fragment contains the user's
+         result. Do not switch to an auto-pageview script. -->
+    <script
+      defer
+      data-domain="pfdebug.com"
+      src="https://plausible.io/js/script.manual.js"></script>
+    <script is:inline>
+      window.plausible =
+        window.plausible ||
+        function () {
+          (window.plausible.q = window.plausible.q || []).push(arguments);
+        };
+      plausible("pageview", {
+        u: location.origin + location.pathname + location.search,
+      });
+    </script>
+  </head>
+  <body>
+    <header class="site-header no-print-chrome">
+      <div class="site-header__inner">
+        <a class="wordmark" href="/">pfdebug</a>
+        <UnitToggle client:load />
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="site-footer no-print-chrome">
+      <div class="site-footer__inner">
+        <p>{legal.disclaimer}</p>
+      </div>
+    </footer>
+  </body>
+</html>
