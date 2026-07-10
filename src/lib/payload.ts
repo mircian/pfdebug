@@ -63,10 +63,61 @@ export function decodePayload(fragment: string): PayloadV1 | null {
     ) {
       return null;
     }
+    const input = (parsed as PayloadV1).input;
+    // Numbers must be real numbers — a hand-crafted fragment must not push
+    // NaN/strings into gauges or the engine.
+    if (input.kneeToWall !== undefined) {
+      if (
+        !Number.isFinite(input.kneeToWall.left_cm) ||
+        !Number.isFinite(input.kneeToWall.right_cm)
+      ) {
+        return null;
+      }
+    }
+    if (input.heelRaise !== undefined) {
+      const hr = input.heelRaise;
+      if (!Number.isFinite(hr.goodReps)) return null;
+      if (!("painfulSkipped" in hr) && !Number.isFinite(hr.painfulReps)) return null;
+    }
     return parsed as PayloadV1;
   } catch {
     return null;
   }
+}
+
+/**
+ * A payload is renderable if the intake gates fire (D0/D0_soft need only
+ * Step 0) or every field the engine reads is actually present. Without this,
+ * a crafted partial payload that doesn't gate would render a plan computed
+ * from completeInput()'s inert defaults (0 cm / 0 reps).
+ */
+export function isRenderable(answers: WizardAnswers): boolean {
+  if (answers.redFlags.length > 0) return true; // gates at C0
+  const complete =
+    answers.duration !== undefined &&
+    answers.loadChanges !== undefined &&
+    answers.onFeet !== undefined &&
+    answers.bmiBand !== undefined &&
+    answers.ageBand !== undefined &&
+    answers.affectedFoot !== undefined &&
+    answers.kneeToWall !== undefined &&
+    answers.heelRaise !== undefined &&
+    answers.footprint !== undefined &&
+    answers.shoes !== undefined;
+  if (complete) return true;
+  // Partial and unflagged: only renderable if C1 soft-declines it.
+  if (answers.painLocation === "back_of_heel") return true;
+  let fit = 0;
+  if (answers.painLocation === "inner_heel" || answers.painLocation === "center_heel") fit++;
+  if (
+    answers.worstWhen.includes("morning_first_steps") ||
+    answers.worstWhen.includes("after_sitting")
+  ) {
+    fit++;
+  }
+  if (answers.worstWhen.includes("eases_moving")) fit++;
+  if (answers.thumbPress === "sharp_that_is_it") fit++;
+  return fit === 0;
 }
 
 /**

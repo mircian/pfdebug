@@ -301,12 +301,13 @@ label {
   color: var(--paper);
 }
 
-/* Toggling animates visible measurements in place (~200 ms). */
+/* Toggling animates visible measurements in place (~200 ms): setUnits()
+   stamps .units-switching on <html> for the duration of the swap. */
 .unit-anim {
   transition: opacity 200ms ease;
 }
 
-.unit-anim--switching {
+.units-switching .unit-anim {
   opacity: 0.15;
 }
 

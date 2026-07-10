@@ -18,7 +18,12 @@ import {
 } from "~/copy/copy";
 import { evaluate, type Input, type Result } from "~/engine";
 import { footwearReplace } from "~/copy/copy";
-import { completeInput, decodePayload, type PayloadV1 } from "~/lib/payload";
+import {
+  completeInput,
+  decodePayload,
+  isRenderable,
+  type PayloadV1,
+} from "~/lib/payload";
 import { setLastResult } from "~/lib/storage";
 import { displayLength, type Units } from "~/lib/units";
 import { useUnits } from "~/lib/useUnits";
@@ -301,7 +306,8 @@ export default function PlanApp() {
     return () => window.removeEventListener("hashchange", read);
   }, []);
 
-  const payload = fragment ? decodePayload(fragment) : null;
+  const decoded = fragment ? decodePayload(fragment) : null;
+  const payload = decoded && isRenderable(decoded.input) ? decoded : null;
 
   // Mirror the last-viewed result for the returning-visitor landing state.
   useEffect(() => {

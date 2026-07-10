@@ -42,6 +42,12 @@ export function getUnits(): Units {
 
 export function setUnits(units: Units): void {
   safeSet(UNITS_KEY, units);
+  // Toggling animates visible measurements in place (~200 ms, BUILD.md §5):
+  // elements tagged .unit-anim dip while the converted values swap in.
+  // prefers-reduced-motion kills the transition globally.
+  const root = document.documentElement;
+  root.classList.add("units-switching");
+  window.setTimeout(() => root.classList.remove("units-switching"), 200);
   window.dispatchEvent(new CustomEvent(UNITS_EVENT, { detail: units }));
 }
 

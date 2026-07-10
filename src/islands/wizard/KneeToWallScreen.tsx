@@ -39,8 +39,14 @@ function FootMeasure({
   // the user is mid-keystroke in this field.
   const [text, setText] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const prevUnits = useRef(units);
   useEffect(() => {
-    if (document.activeElement === inputRef.current) return;
+    // A unit flip always re-derives the display (in some browsers a button
+    // click leaves focus on the input — the number must still convert).
+    // External cm changes (calibrator) never clobber mid-keystroke text.
+    const unitsChanged = prevUnits.current !== units;
+    prevUnits.current = units;
+    if (!unitsChanged && document.activeElement === inputRef.current) return;
     setText(cm === null ? "" : String(displayLength(cm, units).value));
   }, [units, cm]);
 
@@ -188,21 +194,25 @@ export default function KneeToWallScreen({
           {step2.helper_no_tape}
         </summary>
         <div class="card" style="margin-top:0.75rem">
-          <p class="small">
-            {step2.helper_pick_phone} then {step2.helper_tail}
+          {/* Verbatim helper sentence with the [model dropdown] slot filled
+              in place (pfdebug-copy.md, Step 2). */}
+          <p>
+            {step2.helper_pick_phone}{" "}
+            <select
+              id="calib-ref"
+              aria-label="Phone model or reference object"
+              value={refId}
+              onChange={(e) => setRefId((e.target as HTMLSelectElement).value)}
+              style="display:inline-block;width:auto;max-width:100%;font-size:1rem"
+            >
+              {REFERENCE_OBJECTS.map((r) => (
+                <option key={r.id} value={r.id}>
+                  {r.label}
+                </option>
+              ))}
+            </select>{" "}
+            — {step2.helper_tail}
           </p>
-          <label for="calib-ref">Reference object</label>
-          <select
-            id="calib-ref"
-            value={refId}
-            onChange={(e) => setRefId((e.target as HTMLSelectElement).value)}
-          >
-            {REFERENCE_OBJECTS.map((r) => (
-              <option key={r.id} value={r.id}>
-                {r.label}
-              </option>
-            ))}
-          </select>
           <label for="calib-count" style="margin-top:0.75rem;display:block">
             How many lengths?
           </label>

@@ -78,6 +78,7 @@ export default function RulerGauge({
         viewBox={`0 0 ${W} ${H}`}
         role="img"
         aria-label={ariaSummary}
+        class="unit-anim"
         style="display:block;width:100%;height:auto"
       >
         {/* zone bands beneath the ruler */}

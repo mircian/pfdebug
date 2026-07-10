@@ -1,7 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { evaluate, type Input } from "~/engine";
 import fixtures from "~/engine/fixtures/pfdebug-personas.fixtures.json";
-import { completeInput, decodePayload, encodePayload, type PayloadV1 } from "./payload";
+import {
+  completeInput,
+  decodePayload,
+  encodePayload,
+  isRenderable,
+  type PayloadV1,
+} from "./payload";
 
 describe("payload codec — round trip (acceptance: encode → open fresh → identical plan)", () => {
   it("round-trips every persona fixture input to an identical engine result", () => {
@@ -57,5 +63,52 @@ describe("payload codec — round trip (acceptance: encode → open fresh → id
     expect(decodePayload("#v2.abcdef")).toBeNull();
     expect(decodePayload("#v1.not-actually-lz")).toBeNull();
     expect(decodePayload("v1.")).toBeNull();
+  });
+
+  it("rejects crafted payloads with non-numeric test values", () => {
+    const input = fixtures.cases[0]!.input as Input;
+    const bad1 = {
+      input: { ...input, kneeToWall: { ...input.kneeToWall, left_cm: "8" } },
+    };
+    const bad2 = { input: { ...input, heelRaise: { goodReps: NaN, painfulReps: 3 } } };
+    expect(decodePayload(encodePayload(bad1 as unknown as PayloadV1))).toBeNull();
+    expect(decodePayload(encodePayload(bad2 as unknown as PayloadV1))).toBeNull();
+  });
+});
+
+describe("isRenderable — partial payloads only render when a gate fires", () => {
+  const step0: import("./payload").WizardAnswers = {
+    painLocation: "inner_heel",
+    worstWhen: ["morning_first_steps"],
+    thumbPress: "sharp_that_is_it",
+    redFlags: [],
+  };
+
+  it("accepts complete inputs", () => {
+    expect(isRenderable(fixtures.cases[0]!.input as Input)).toBe(true);
+  });
+
+  it("accepts partials that gate at C0 (red flags)", () => {
+    expect(isRenderable({ ...step0, redFlags: ["pain_8plus"] })).toBe(true);
+  });
+
+  it("accepts partials that soft-decline at C1 (back of heel / fit 0)", () => {
+    expect(isRenderable({ ...step0, painLocation: "back_of_heel" })).toBe(true);
+    expect(
+      isRenderable({
+        painLocation: "other",
+        worstWhen: ["worse_later"],
+        thumbPress: "nothing",
+        redFlags: [],
+      }),
+    ).toBe(true);
+  });
+
+  it("rejects a crafted partial that would compose a plan from defaults", () => {
+    // fitScore 3, no red flags, no test data — must NOT render a plan built
+    // on completeInput()'s inert zeros (0 cm / 0 reps).
+    expect(isRenderable({ ...step0, worstWhen: ["morning_first_steps", "eases_moving"] })).toBe(
+      false,
+    );
   });
 });
