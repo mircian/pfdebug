@@ -25,18 +25,20 @@ function sideHeading(side: Side, affected: Foot, which: Phase): string {
   return which === "first" ? `${foot} foot — your good side` : `${foot} foot — the painful side`;
 }
 
-function useMetronome(enabled: boolean, sound: boolean) {
+function useMetronome(
+  enabled: boolean,
+  sound: boolean,
+  audioRef: { current: AudioContext | null },
+) {
   const [beat, setBeat] = useState(0);
-  const audioRef = useRef<AudioContext | null>(null);
 
   useEffect(() => {
     if (!enabled) return;
     // "about two seconds up, two seconds down" — tick every 2 s.
     const id = window.setInterval(() => {
       setBeat((b) => b + 1);
-      if (sound) {
+      if (sound && audioRef.current) {
         try {
-          audioRef.current ??= new AudioContext();
           const ctx = audioRef.current;
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
@@ -78,7 +80,23 @@ function RepCounter({
   const [count, setCount] = useState(0);
   const [metronome, setMetronome] = useState(false);
   const [sound, setSound] = useState(false);
-  const beat = useMetronome(metronome, sound);
+  const audioRef = useRef<AudioContext | null>(null);
+  const beat = useMetronome(metronome, sound, audioRef);
+
+  function toggleSound() {
+    const next = !sound;
+    setSound(next);
+    if (next) {
+      // Create/resume inside the user gesture — WebKit keeps a context made
+      // from a timer callback permanently suspended (silent metronome).
+      try {
+        audioRef.current ??= new AudioContext();
+        audioRef.current.resume().catch(() => {});
+      } catch {
+        /* audio unavailable — visual cue still works */
+      }
+    }
+  }
 
   return (
     <div>
@@ -131,7 +149,7 @@ function RepCounter({
             type="checkbox"
             checked={sound}
             disabled={!metronome}
-            onChange={() => setSound(!sound)}
+            onChange={toggleSound}
           />
           <span>Add sound</span>
         </label>
@@ -239,7 +257,10 @@ export default function HeelRaiseScreen({
       {phase === "second" && (
         <RepCounter
           heading={sideHeading(second, affectedFoot, "second")}
-          showSkip={true}
+          // The skipped shape means "good side tested, painful side skipped";
+          // a bilateral case has no good side, and the engine spec models
+          // bilateral input as both-tested — so no skip control there.
+          showSkip={affectedFoot !== "both"}
           onDone={(reps) =>
             onDone({ goodReps: firstReps ?? 0, painfulReps: reps })
           }

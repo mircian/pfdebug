@@ -137,12 +137,15 @@ function OverloadIntro({
   const ankle = overload.ankleBendsFine(displayLength(minCm, units).text);
   const hasSpike = (result.flags?.loadSpike.set ?? false) && input.loadChanges.length > 0;
   const footwearFlag = result.flags?.footwear.set ?? false;
+  // Flagged footwear didn't pass the shoe check — the clean line must not
+  // claim it did.
+  const archShoes = footwearFlag ? overload.archOnlyClean : overload.archShoesClean;
 
   return (
     <>
       <h1>{overload.title}</h1>
       <p>{overload.reassurance}</p>
-      <MdP text={overload.testsClean(calf, ankle)} />
+      <MdP text={overload.testsClean(calf, ankle, archShoes)} />
       <MdP
         text={
           hasSpike

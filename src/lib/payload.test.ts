@@ -65,6 +65,21 @@ describe("payload codec — round trip (acceptance: encode → open fresh → id
     expect(decodePayload("v1.")).toBeNull();
   });
 
+  it("drops a malformed prev baseline instead of crashing the gauges", () => {
+    const input = fixtures.cases[0]!.input as Input;
+    const bad = { input, prev: {} } as unknown as PayloadV1;
+    const decoded = decodePayload(encodePayload(bad));
+    expect(decoded).not.toBeNull();
+    expect(decoded!.prev).toBeUndefined();
+    expect(decoded!.input).toEqual(input);
+
+    const badNums = {
+      input,
+      prev: { kneeToWall: { left_cm: "x", right_cm: 9 }, heelRaise: { goodReps: 18, painfulReps: 8 } },
+    } as unknown as PayloadV1;
+    expect(decodePayload(encodePayload(badNums))!.prev).toBeUndefined();
+  });
+
   it("rejects crafted payloads with non-numeric test values", () => {
     const input = fixtures.cases[0]!.input as Input;
     const bad1 = {

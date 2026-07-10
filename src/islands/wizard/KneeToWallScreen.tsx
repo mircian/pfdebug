@@ -92,6 +92,44 @@ function FootMeasure({
   );
 }
 
+// Module scope, not inside the screen's render: an inline component type is
+// recreated per render, which remounts the fieldset DOM on every keystroke
+// and drops keyboard focus mid-radio-group.
+function EndFeel({
+  side,
+  value,
+  onSelect,
+}: {
+  side: Side;
+  value: Sensation | null;
+  onSelect: (v: Sensation) => void;
+}) {
+  const options = step2.endfeel.options as readonly Option<Sensation>[];
+  return (
+    <fieldset style="border:0;padding:0;margin:0 0 1rem">
+      <legend style="font-weight:600;text-transform:capitalize">
+        {side} foot: {step2.endfeel.question}
+      </legend>
+      {options.map((o) => (
+        <label
+          key={o.value}
+          class={`choice ${value === o.value ? "choice--selected" : ""}`}
+        >
+          <input
+            type="radio"
+            name={`endfeel-${side}`}
+            checked={value === o.value}
+            onChange={() => onSelect(o.value)}
+          />
+          <span>
+            <Md text={o.label} />
+          </span>
+        </label>
+      ))}
+    </fieldset>
+  );
+}
+
 export default function KneeToWallScreen({
   units,
   draft,
@@ -119,41 +157,6 @@ export default function KneeToWallScreen({
     const cm = lengthsToCm(refId, count);
     if (cm === null) return;
     onChange(side === "left" ? { ...draft, left_cm: cm } : { ...draft, right_cm: cm });
-  }
-
-  const endfeelOptions = step2.endfeel.options as readonly Option<Sensation>[];
-
-  function EndFeel({ side }: { side: Side }) {
-    const value = side === "left" ? draft.sensationLeft : draft.sensationRight;
-    return (
-      <fieldset style="border:0;padding:0;margin:0 0 1rem">
-        <legend style="font-weight:600;text-transform:capitalize">
-          {side} foot: {step2.endfeel.question}
-        </legend>
-        {endfeelOptions.map((o) => (
-          <label
-            key={o.value}
-            class={`choice ${value === o.value ? "choice--selected" : ""}`}
-          >
-            <input
-              type="radio"
-              name={`endfeel-${side}`}
-              checked={value === o.value}
-              onChange={() =>
-                onChange(
-                  side === "left"
-                    ? { ...draft, sensationLeft: o.value }
-                    : { ...draft, sensationRight: o.value },
-                )
-              }
-            />
-            <span>
-              <Md text={o.label} />
-            </span>
-          </label>
-        ))}
-      </fieldset>
-    );
   }
 
   return (
@@ -237,8 +240,16 @@ export default function KneeToWallScreen({
         </div>
       </details>
 
-      <EndFeel side="left" />
-      <EndFeel side="right" />
+      <EndFeel
+        side="left"
+        value={draft.sensationLeft}
+        onSelect={(v) => onChange({ ...draft, sensationLeft: v })}
+      />
+      <EndFeel
+        side="right"
+        value={draft.sensationRight}
+        onSelect={(v) => onChange({ ...draft, sensationRight: v })}
+      />
 
       <div class="stack-actions">
         <button

@@ -79,10 +79,38 @@ export function decodePayload(fragment: string): PayloadV1 | null {
       if (!Number.isFinite(hr.goodReps)) return null;
       if (!("painfulSkipped" in hr) && !Number.isFinite(hr.painfulReps)) return null;
     }
-    return parsed as PayloadV1;
+    // prev is a nicety (retest deltas) — a malformed one is dropped rather
+    // than crashing the gauges with NaN/undefined.
+    const payload = parsed as PayloadV1;
+    if (payload.prev !== undefined && !isValidBaseline(payload.prev)) {
+      delete payload.prev;
+    }
+    return payload;
   } catch {
     return null;
   }
+}
+
+function isValidBaseline(prev: unknown): prev is RetestBaseline {
+  if (typeof prev !== "object" || prev === null) return false;
+  const p = prev as RetestBaseline;
+  if (
+    typeof p.kneeToWall !== "object" ||
+    p.kneeToWall === null ||
+    !Number.isFinite(p.kneeToWall.left_cm) ||
+    !Number.isFinite(p.kneeToWall.right_cm)
+  ) {
+    return false;
+  }
+  if (typeof p.heelRaise !== "object" || p.heelRaise === null) return false;
+  if (!Number.isFinite(p.heelRaise.goodReps)) return false;
+  if (
+    !("painfulSkipped" in p.heelRaise) &&
+    !Number.isFinite((p.heelRaise as { painfulReps: number }).painfulReps)
+  ) {
+    return false;
+  }
+  return true;
 }
 
 /**

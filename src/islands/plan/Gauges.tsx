@@ -21,7 +21,15 @@ export function KneeToWallGauge({
   prev?: RetestBaseline;
 }) {
   const { left_cm, right_cm } = input.kneeToWall;
-  const domainMax = Math.max(15, left_cm + 2, right_cm + 2);
+  // Retest baselines share the scale — a ghost pointer must sit at its true
+  // position, not clamp to the edge.
+  const domainMax = Math.max(
+    15,
+    left_cm + 2,
+    right_cm + 2,
+    (prev?.kneeToWall.left_cm ?? 0) + 2,
+    (prev?.kneeToWall.right_cm ?? 0) + 2,
+  );
   const t = KNEE_TO_WALL_THRESHOLD_CM;
 
   const pointers: GaugePointer[] = [
@@ -116,7 +124,13 @@ export function HeelRaiseGauge({
     });
   }
 
-  const domainMax = Math.max(good + 6, painful ?? 0, floor + 6, 25);
+  const domainMax = Math.max(
+    good + 6,
+    painful ?? 0,
+    floor + 6,
+    25,
+    prevTested ? Math.max(prevTested.goodReps, prevTested.painfulReps) + 6 : 0,
+  );
 
   const asym =
     painful !== null && good > 0 && input.affectedFoot !== "both"

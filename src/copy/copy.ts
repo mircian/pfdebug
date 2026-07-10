@@ -470,8 +470,11 @@ export const overload = {
   title: "Good news: nothing's broken. You did too much, too soon.",
   reassurance:
     "This isn't us waving your pain away — it's real, and it's worth fixing. It's us telling you the fix is simpler than you might have feared.",
-  testsClean: (calf: string, ankle: string) =>
-    `Your tests came back clean across the board — ${calf} · ${ankle} · your arch and shoes are doing their job. That matters, because it means the tissue on the bottom of your foot is healthy.`,
+  testsClean: (calf: string, ankle: string, archShoes: string) =>
+    `Your tests came back clean across the board — ${calf} · ${ankle} · ${archShoes}. That matters, because it means the tissue on the bottom of your foot is healthy.`,
+  archShoesClean: "your arch and shoes are doing their job",
+  /** When footwear is flagged the shoes did NOT pass — name only the arch. */
+  archOnlyClean: "your arch is doing its job",
   calfHeldUp: (painful: number, good: number) =>
     `your calf held up: painful side ${painful} reps vs ${good}, both strong`,
   calfGoodSideOnly: (good: number) =>
