@@ -1,0 +1,78 @@
+---
+/**
+ * `/tests/knee-to-wall` — standalone SEO explainer for the knee-to-wall
+ * (ankle dorsiflexion) test (BUILD.md §3, later milestone). Educational prose
+ * lives in `testPages.kneeToWall`; the step-by-step technique is reused
+ * verbatim from `step2.instructions`. Shared chrome comes from TestPage.
+ */
+import TestPage from "~/layouts/TestPage.astro";
+import Illustration from "~/components/Illustration";
+import { MdP } from "~/components/Md";
+import { step2, testPages } from "~/copy/copy";
+
+const c = testPages.kneeToWall;
+---
+
+<TestPage
+  slug={c.slug}
+  title={`${c.title} | pfdebug`}
+  description={c.description}
+  heading={c.heading}
+  lede={c.lede}
+>
+  <section aria-labelledby="ktw-measures">
+    <h2 id="ktw-measures">{c.measures.title}</h2>
+    {c.measures.body.map((p) => <MdP text={p} />)}
+  </section>
+
+  <section aria-labelledby="ktw-how">
+    <h2 id="ktw-how">{c.how.title}</h2>
+    {/* Verbatim test technique, reused from the wizard's Step 2 copy. */}
+    {step2.instructions.map((p) => <MdP text={p} />)}
+    <Illustration
+      name="knee-to-wall"
+      caption={c.illustration.caption}
+      alt={c.illustration.alt}
+    />
+    <MdP text={c.how.helper} />
+  </section>
+
+  <section aria-labelledby="ktw-result">
+    <h2 id="ktw-result">{c.result.title}</h2>
+    <MdP text={c.result.threshold} />
+    <MdP text={c.result.endfeelLead} />
+    <div class="endfeel-grid">
+      <div class="card">
+        <h3>{c.result.stretch.label}</h3>
+        <MdP text={c.result.stretch.body} />
+      </div>
+      <div class="card">
+        <h3>{c.result.pinch.label}</h3>
+        <MdP text={c.result.pinch.body} />
+      </div>
+    </div>
+    <MdP text={c.result.endfeelTail} />
+  </section>
+</TestPage>
+
+<style>
+  .endfeel-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (min-width: 34rem) {
+    .endfeel-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .endfeel-grid .card {
+    margin: 0;
+  }
+
+  .endfeel-grid h3 {
+    margin-top: 0;
+  }
+</style>

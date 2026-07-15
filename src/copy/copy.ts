@@ -565,3 +565,93 @@ export const legal = {
   disclaimer:
     "pfdebug is an educational self-check, not a medical diagnosis or treatment. It doesn't replace a qualified clinician. The exercises are widely recommended and gentle, but if anything causes sharp or worsening pain, stop and see a professional. If you have any of the warning signs we ask about, see a clinician before starting.",
 } as const;
+
+// ---------------------------------------------------------------------------
+// Standalone test explainers (`/tests/*`) — SEO / education (BUILD.md §3, §9)
+// ---------------------------------------------------------------------------
+
+/**
+ * Prose for the three standalone test-explainer pages. `common` is the shared
+ * chrome the reusable TestPage layout renders (kicker, safety note, funnel CTA,
+ * sibling cross-links); each test key holds that page's authored educational
+ * copy. New voice-matched prose (this page's copy is not in pfdebug-copy.md),
+ * kept here so a later localization pass touches one file (BUILD.md §10).
+ *
+ * The step-by-step test technique is NOT duplicated here — the explainers
+ * reuse `step2.instructions` verbatim.
+ */
+export const testPages = {
+  common: {
+    /** Eyebrow above every test-page H1. */
+    kicker: "Self-check",
+    /** Safety framing — calm, never the referral-only --stop red. */
+    selfCheck:
+      "This is a self-check, not a diagnosis. It shows how one part of your foot and ankle moves — it doesn't replace a clinician. If a movement is sharply painful, stop.",
+    /** Lead-in to the funnel CTA that sends the reader into the full flow. */
+    ctaLead:
+      "One test on its own only tells you so much. The full check runs this alongside the others, works out which factors are most likely driving your heel pain, and turns them into a short plan.",
+    cta: "Run the full check",
+    ctaHref: "/assessment",
+    relatedTitle: "The other self-checks",
+    /** Registry of the sibling pages, for cross-linking. */
+    pages: {
+      "knee-to-wall": {
+        href: "/tests/knee-to-wall",
+        label: "Knee-to-wall test",
+        blurb: "How far your ankle bends forward.",
+      },
+      "heel-raise": {
+        href: "/tests/heel-raise",
+        label: "Single-leg heel-raise test",
+        blurb: "How much your calf and foot can lift.",
+      },
+      "wet-footprint": {
+        href: "/tests/wet-footprint",
+        label: "Wet-footprint test",
+        blurb: "The shape of your arch under load.",
+      },
+    },
+  },
+
+  kneeToWall: {
+    slug: "knee-to-wall",
+    title: "Knee-to-wall test: the ankle mobility test for plantar fasciitis",
+    description:
+      "How to do the knee-to-wall test at home and read the result — the wall test for ankle dorsiflexion, why a stiff ankle feeds plantar fasciitis, and what under 10 cm means.",
+    heading: "The knee-to-wall test",
+    lede: "The knee-to-wall test measures how far your ankle bends forward — its dorsiflexion range. It needs a wall and about two minutes, and it's one of the movement tests behind your plantar fasciitis self-check.",
+    illustration: {
+      caption: "Knee-to-wall: heel down, knee driving forward to touch the wall.",
+      alt: "A figure facing a wall, one foot forward, bending the knee to touch the wall while the heel stays flat on the floor.",
+    },
+    measures: {
+      title: "What it measures",
+      body: [
+        "With every step, your shin travels forward over your planted foot. That movement is ankle dorsiflexion, and the knee-to-wall test puts a number on how much of it you have.",
+        "It matters for heel pain because of what a stiff ankle makes the rest of the foot do. When the ankle can't bend far enough, the foot flattens to make up the difference — and that flattening overstretches the fascia along the bottom of your foot, a little more on every step. Restricted ankle dorsiflexion is one of the factors linked to plantar heel pain in the research.",
+      ],
+    },
+    how: {
+      title: "How to do it",
+      helper:
+        "Measure from the tip of your big toe to the wall in a straight line, and test both feet. A gap between the two sides tells you as much as the number itself.",
+    },
+    result: {
+      title: "What your number means",
+      threshold:
+        "Under about **10 cm** — roughly 4 inches — counts as tight. So does a gap of **2 cm or more** between your two feet, even when both clear 10 cm. Past that, with the sides even, your ankle range isn't the thing holding you back.",
+      endfeelLead:
+        "The number is only half of it. What you *feel* at the farthest position tells you why the ankle stops — and the two reasons need different fixes.",
+      stretch: {
+        label: "A stretch behind the ankle",
+        body: "A pull in your calf or the back of your ankle points to soft-tissue tightness. That's the trainable kind — the same knee-to-wall movement, done slowly as an exercise, loosens it over a few weeks.",
+      },
+      pinch: {
+        label: "A pinch at the front",
+        body: "A pinch or block at the *front* of the ankle, where it folds, points to a restriction in the joint itself rather than a tight muscle. That kind responds to hands-on care far better than to stretching, so it's worth a single visit to a physiotherapist or podiatrist.",
+      },
+      endfeelTail:
+        "This is the one thing the number alone can miss, so notice it while you test.",
+    },
+  },
+} as const;

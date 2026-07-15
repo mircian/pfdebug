@@ -1,0 +1,128 @@
+---
+/**
+ * Reusable layout for the standalone `/tests/*` explainer pages (BUILD.md §3).
+ * It owns everything the three sibling pages share so each page stays thin:
+ * the Base wrap + SEO, the kicker/H1/lede, the safety self-check note, the
+ * funnel CTA into `/assessment`, and the cross-links to the other two tests.
+ * A page supplies its educational body through the default <slot />.
+ *
+ * Sibling pages (`heel-raise`, `wet-footprint`) reuse this by passing their own
+ * `slug`/`title`/`description`/`heading`/`lede` and slotting their sections —
+ * the chrome, cross-links, and CTA come for free.
+ */
+import Base from "~/layouts/Base.astro";
+import { MdP } from "~/components/Md";
+import { testPages } from "~/copy/copy";
+
+const { common } = testPages;
+type Slug = keyof typeof common.pages;
+
+interface Props {
+  /** Which test this page is — drives the cross-links to the other two. */
+  slug: Slug;
+  /** SEO <title> (already brand-suffixed by the page). */
+  title: string;
+  /** SEO meta description. */
+  description: string;
+  /** H1 naming the test. */
+  heading: string;
+  /** Intro paragraph, inline markdown. */
+  lede: string;
+}
+
+const { slug, title, description, heading, lede } = Astro.props;
+const siblings = (Object.keys(common.pages) as Slug[]).filter((s) => s !== slug);
+---
+
+<Base title={title} description={description}>
+  <article class="test-explainer">
+    <p class="kicker">{common.kicker}</p>
+    <h1>{heading}</h1>
+    <MdP text={lede} class="lede" />
+
+    <div class="ticks" role="presentation"></div>
+
+    <slot />
+
+    {/* Safety framing — calm --flag callout, never the referral-only --stop. */}
+    <MdP text={common.selfCheck} class="callout" />
+
+    {/* Funnel into the full assessment. */}
+    <section class="test-cta" aria-label="Run the full check">
+      <MdP text={common.ctaLead} />
+      <div class="stack-actions">
+        <a class="btn btn--primary" href={common.ctaHref}>{common.cta}</a>
+      </div>
+    </section>
+
+    <div class="ticks" role="presentation"></div>
+
+    {/* Cross-links to the sibling test pages. */}
+    <nav class="related-tests" aria-label={common.relatedTitle}>
+      <h2>{common.relatedTitle}</h2>
+      <ul>
+        {
+          siblings.map((s) => (
+            <li>
+              <a href={common.pages[s].href}>{common.pages[s].label}</a>
+              <span class="small">{common.pages[s].blurb}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </article>
+</Base>
+
+<style>
+  .kicker {
+    font-family: var(--font-data);
+    font-weight: 500;
+    font-size: var(--text-sm);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 0 0 0.4rem;
+  }
+
+  .lede {
+    font-size: var(--text-lg);
+    color: var(--ink);
+  }
+
+  .test-cta {
+    margin: 1.5rem 0;
+  }
+
+  .related-tests h2 {
+    font-size: var(--text-lg);
+  }
+
+  .related-tests ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .related-tests li {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: 0.8rem 1rem;
+    min-height: var(--touch);
+    justify-content: center;
+  }
+
+  .related-tests a {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .related-tests a:hover {
+    text-decoration: underline;
+  }
+</style>
