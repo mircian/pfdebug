@@ -704,4 +704,49 @@ export const testPages = {
         "The real value of this test is watching it move. Note your reps and retest every few weeks. Watching the number climb is how you'll know the work is paying off — often before the pain itself changes.",
     },
   },
+
+  wetFootprint: {
+    slug: "wet-footprint",
+    title: "Wet footprint test: the arch type test for flat feet and high arches",
+    description:
+      "How to do the wet-footprint test at home and read the result — the arch type test for flat feet, a normal arch, and high arches, and why your arch shape changes how load reaches the plantar fascia.",
+    heading: "The wet-footprint test",
+    lede: "The wet-footprint test reads the shape of your arch under load — flat, normal, or high — from the mark your wet sole leaves on a dry floor. It takes a splash of water and about a minute, and it's one of the checks behind your plantar fasciitis self-check.",
+    illustration: {
+      caption:
+        "Wet footprint: the mark a wet sole leaves on a tile — a full print, a normal curve, or a thin strip.",
+      alt: "Three wet footprints on a tile side by side: a full flat print, a print with a clear curve missing on the inner side, and a thin strip linking the ball and heel.",
+    },
+    measures: {
+      title: "What it measures",
+      body: [
+        "The arch is the curve on the inner side of your foot, and it changes shape the moment you put weight through it. The wet-footprint test catches that: the more of your sole that presses down and prints, the more your arch flattens under load. A full print, a clear curve, or a thin strip each point to a different arch type.",
+        "It matters for heel pain because arch shape changes how force lands on the fascia along the bottom of your foot. A foot that flattens under load stretches that tissue a little further on every step; a high, stiff arch absorbs less shock, so more of each impact reaches it. This is a contributing factor, not a verdict — plenty of people with either shape never get heel pain. You can't change your foot's shape, but you can support it, and that's most of what the result is for.",
+      ],
+    },
+    how: {
+      title: "How to do it",
+      helper:
+        "Put your full weight through the foot as you step — a light touch won't press the arch down the way walking does. Test both feet; they can differ.",
+    },
+    result: {
+      title: "What your footprint shows",
+      lead: "Your print matches one of three shapes. A normal arch is common and needs nothing — only the flatter and higher shapes point to support worth adding.",
+      types: {
+        flat: {
+          body: "The arch flattens under load, which stretches the fascia a little further on each step. A supportive shoe with a firm heel and some arch support does most of the work.",
+        },
+        neutral: {
+          body: "A normal arch, doing its job — nothing to fix here. Well-fitting, supportive shoes are all it asks for; your footprint isn't what's driving your heel pain.",
+        },
+        high: {
+          body: "A high, stiff arch absorbs less shock, so more of each step's impact reaches the fascia. A cushioned, supportive shoe helps it share the load.",
+        },
+      },
+      insole:
+        "For a flatter or higher arch, an off-the-shelf arch-support insole is a reasonable next step — no need for custom orthotics to start. If the simple version doesn't help in a few weeks, a podiatrist can say whether custom is worth it.",
+      shoeWear:
+        "Your shoes give a second read for free: from behind, heavier wear on the inner edge points the same way as a flattening arch. The self-check collects both — footprint and shoe wear — because together they give a steadier picture than either alone.",
+    },
+  },
 } as const;

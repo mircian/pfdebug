@@ -1,0 +1,81 @@
+---
+/**
+ * `/tests/wet-footprint` — standalone SEO explainer for the wet-footprint
+ * (arch type) test (BUILD.md §3, later milestone). Educational prose lives in
+ * `testPages.wetFootprint`; the test instruction and the three arch-type labels
+ * are reused verbatim from the wizard's Step 4 copy (`step4.footprint`). Shared
+ * chrome comes from TestPage.
+ */
+import TestPage from "~/layouts/TestPage.astro";
+import Illustration from "~/components/Illustration";
+import { MdP } from "~/components/Md";
+import { step4, testPages } from "~/copy/copy";
+
+const c = testPages.wetFootprint;
+---
+
+<TestPage
+  slug={c.slug}
+  title={`${c.title} | pfdebug`}
+  description={c.description}
+  heading={c.heading}
+  lede={c.lede}
+>
+  <section aria-labelledby="wf-measures">
+    <h2 id="wf-measures">{c.measures.title}</h2>
+    {c.measures.body.map((p) => <MdP text={p} />)}
+  </section>
+
+  <section aria-labelledby="wf-how">
+    <h2 id="wf-how">{c.how.title}</h2>
+    {/* Verbatim test instruction, reused from the wizard's Step 4 copy. */}
+    <MdP text={step4.footprint.question} />
+    <Illustration
+      name="wet footprint (flat, normal, high)"
+      caption={c.illustration.caption}
+      alt={c.illustration.alt}
+    />
+    <MdP text={c.how.helper} />
+  </section>
+
+  <section aria-labelledby="wf-result">
+    <h2 id="wf-result">{c.result.title}</h2>
+    <MdP text={c.result.lead} />
+    <div class="arch-grid">
+      {/* Card headings are the verbatim Step 4 footprint option labels. */}
+      {
+        step4.footprint.options.map((o) => (
+          <div class="card">
+            <h3>{o.label}</h3>
+            <MdP text={c.result.types[o.value].body} />
+          </div>
+        ))
+      }
+    </div>
+    <MdP text={c.result.insole} />
+    <MdP text={c.result.shoeWear} />
+  </section>
+</TestPage>
+
+<style>
+  .arch-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (min-width: 40rem) {
+    .arch-grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .arch-grid .card {
+    margin: 0;
+  }
+
+  .arch-grid h3 {
+    margin-top: 0;
+    font-size: var(--text-base);
+  }
+</style>
