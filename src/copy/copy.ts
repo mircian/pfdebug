@@ -654,4 +654,54 @@ export const testPages = {
         "This is the one thing the number alone can miss, so notice it while you test.",
     },
   },
+
+  heelRaise: {
+    slug: "heel-raise",
+    title: "Single-leg heel raise test: the calf strength test for plantar fasciitis",
+    description:
+      "How to do the single-leg heel raise test at home and read the result — the calf strength test for plantar fasciitis, the reps-by-age benchmark, and what a side-to-side gap means.",
+    heading: "The single-leg heel-raise test",
+    lede: "The single-leg heel-raise test counts how many times you can rise onto the ball of one foot — a measure of your calf and foot's plantarflexion endurance. It needs a wall for balance and a few minutes, and it's one of the movement tests behind your plantar fasciitis self-check.",
+    illustration: {
+      caption: "Single-leg heel raise: rise onto the ball of the foot, lower slowly.",
+      alt: "A figure standing on one foot, fingertips on a wall for balance, rising onto the ball of the foot.",
+    },
+    measures: {
+      title: "What it measures",
+      body: [
+        "Each time you push off a step, your calf and the small muscles of your foot lift your whole body weight up through the ball of the foot. The single-leg heel raise counts how many times you can do that on one leg before the muscle fatigues — your plantarflexion endurance, strength and stamina together.",
+        "It matters for heel pain because that same system is what shields the fascia along the bottom of your foot. A strong calf and a foot that can carry load absorb the forces of walking and running, so less of it reaches the fascia. When the calf tires early, the fascia takes more than its share on every step — and an overloaded fascia is what plantar fasciitis is. A calf that fatigues quickly is one of the factors linked to plantar heel pain in the research.",
+      ],
+    },
+    how: {
+      title: "How to do it",
+      sequence:
+        "You test your good side first, rest two minutes, then the painful side — the rest keeps the two counts comparable. If the painful side is too sore to test today, skip it and retest once the flare settles. A bad day doesn't spoil the result; it just moves that one number to later.",
+    },
+    result: {
+      title: "What your number means",
+      benchmarkLead:
+        "Two things make your number meaningful: how it stacks up against a rough benchmark for your age, and how your two sides compare to each other. Muscle endurance falls with age, so the benchmark falls too. As a floor to clear on one leg:",
+      benchmarkCaption: "Single-leg heel raises to clear, by age",
+      benchmark: [
+        { age: "Under 40", reps: 20 },
+        { age: "40–54", reps: 16 },
+        { age: "55–69", reps: 12 },
+        { age: "70+", reps: 8 },
+      ],
+      asymmetry:
+        "The comparison between your two sides is often the clearer signal. If your painful side comes in **20% or more** below your good side — say 12 reps against 15 — that gap points to a real strength deficit on the sore foot, even when the raw count looks respectable. It's the single most useful thing this test tells you.",
+      limitsLead: "Two honest limits come with the test:",
+      bilateral: {
+        label: "Both heels affected",
+        body: "With both sides painful there's no healthy side to measure against, so the side-to-side comparison doesn't apply. Lean on the age benchmark instead, and read it gently — a self-test can't confirm a deficit cleanly when both sides are affected. Once one side settles enough to test properly, a side-to-side retest gives a clearer read.",
+      },
+      flare: {
+        label: "Pain stopped you early",
+        body: "If pain cut you off before the muscle actually tired, the count reflects the flare, not your strength. That's not a failure — it's information. Skip that side for now and retest once the pain settles, when the number will mean what it should.",
+      },
+      track:
+        "The real value of this test is watching it move. Note your reps and retest every few weeks. Watching the number climb is how you'll know the work is paying off — often before the pain itself changes.",
+    },
+  },
 } as const;

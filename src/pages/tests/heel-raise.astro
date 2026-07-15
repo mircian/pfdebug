@@ -1,0 +1,144 @@
+---
+/**
+ * `/tests/heel-raise` — standalone SEO explainer for the single-leg heel-raise
+ * (calf / plantarflexion capacity) test (BUILD.md §3, later milestone).
+ * Educational prose lives in `testPages.heelRaise`; the step-by-step technique
+ * is reused verbatim from `step3.instructions`. Shared chrome comes from TestPage.
+ */
+import TestPage from "~/layouts/TestPage.astro";
+import Illustration from "~/components/Illustration";
+import { MdP } from "~/components/Md";
+import { step3, testPages } from "~/copy/copy";
+
+const c = testPages.heelRaise;
+---
+
+<TestPage
+  slug={c.slug}
+  title={`${c.title} | pfdebug`}
+  description={c.description}
+  heading={c.heading}
+  lede={c.lede}
+>
+  <section aria-labelledby="hr-measures">
+    <h2 id="hr-measures">{c.measures.title}</h2>
+    {c.measures.body.map((p) => <MdP text={p} />)}
+  </section>
+
+  <section aria-labelledby="hr-how">
+    <h2 id="hr-how">{c.how.title}</h2>
+    {/* Verbatim test technique, reused from the wizard's Step 3 copy. */}
+    {step3.instructions.map((p) => <MdP text={p} />)}
+    <Illustration
+      name="single-leg heel raise"
+      caption={c.illustration.caption}
+      alt={c.illustration.alt}
+    />
+    <MdP text={c.how.sequence} />
+  </section>
+
+  <section aria-labelledby="hr-result">
+    <h2 id="hr-result">{c.result.title}</h2>
+    <MdP text={c.result.benchmarkLead} />
+    <table class="benchmark">
+      <caption>{c.result.benchmarkCaption}</caption>
+      <thead>
+        <tr>
+          <th scope="col">Age</th>
+          <th scope="col">Heel raises</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          c.result.benchmark.map((row) => (
+            <tr>
+              <th scope="row">{row.age}</th>
+              <td class="reps data">{row.reps}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+    <MdP text={c.result.asymmetry} />
+    <MdP text={c.result.limitsLead} />
+    <div class="limits-grid">
+      <div class="card">
+        <h3>{c.result.bilateral.label}</h3>
+        <MdP text={c.result.bilateral.body} />
+      </div>
+      <div class="card">
+        <h3>{c.result.flare.label}</h3>
+        <MdP text={c.result.flare.body} />
+      </div>
+    </div>
+    <MdP text={c.result.track} />
+  </section>
+</TestPage>
+
+<style>
+  .benchmark {
+    width: 100%;
+    border-collapse: collapse;
+    border: var(--border);
+    border-radius: var(--radius);
+    margin: 1.25rem 0 1.5rem;
+  }
+
+  .benchmark caption {
+    caption-side: top;
+    text-align: left;
+    font-size: var(--text-sm);
+    color: var(--ink-soft);
+    padding: 0 0 0.5rem;
+  }
+
+  .benchmark th,
+  .benchmark td {
+    padding: 0.55rem 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--ink-soft);
+  }
+
+  .benchmark thead th {
+    font-family: var(--font-data);
+    font-weight: 500;
+    font-size: var(--text-sm);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .benchmark tbody th {
+    font-weight: 600;
+  }
+
+  .benchmark tbody tr:last-child th,
+  .benchmark tbody tr:last-child td {
+    border-bottom: 0;
+  }
+
+  .benchmark .reps {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .limits-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+
+  @media (min-width: 34rem) {
+    .limits-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  .limits-grid .card {
+    margin: 0;
+  }
+
+  .limits-grid h3 {
+    margin-top: 0;
+  }
+</style>
