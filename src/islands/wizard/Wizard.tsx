@@ -14,8 +14,8 @@ import { MdP } from "~/components/Md";
 import ProgressRuler from "~/components/ProgressRuler";
 import {
   MultiChoice,
-  ScreenShell,
   SingleChoice,
+  WizardActions,
   type Option,
 } from "~/components/QuestionScreens";
 import { persistenceNotice, step0, step1, step4 } from "~/copy/copy";
@@ -81,22 +81,44 @@ const FLOW: ScreenId[] = [
   "save",
 ];
 
-const STEP_LABELS: Record<ScreenId, string> = {
-  intro: "Step 0 — Before we start",
-  q1: "Step 0 — Before we start",
-  q2: "Step 0 — Before we start",
-  q3: "Step 0 — Before we start",
-  q4: "Step 0 — Before we start",
-  q5: "Step 1 — Your story",
-  q6: "Step 1 — Your story",
-  q7: "Step 1 — Your story",
-  q9: "Step 1 — Your story",
-  q10: "Step 1 — Your story",
-  q11: "Step 1 — Your story",
-  ktw: "Step 2 — Knee-to-wall test",
-  hr: "Step 3 — Single-leg heel raise",
-  footprint: "Step 4 — Foot & footwear",
-  shoes: "Step 4 — Foot & footwear",
+/** Ruler labels — left reads the step, right names the surface (matching the
+ *  hi-fi mocks: "STEP 2 OF 4" · "KNEE-TO-WALL"). */
+const PROGRESS_LABELS: Record<ScreenId, { left: string; right: string }> = {
+  intro: { left: "STEP 0 OF 4", right: "BEFORE WE START" },
+  q1: { left: "STEP 0 OF 4", right: "QUESTION 1 / 4" },
+  q2: { left: "STEP 0 OF 4", right: "QUESTION 2 / 4" },
+  q3: { left: "STEP 0 OF 4", right: "QUESTION 3 / 4" },
+  q4: { left: "STEP 0 OF 4", right: "QUESTION 4 / 4" },
+  q5: { left: "STEP 1 OF 4", right: "YOUR STORY" },
+  q6: { left: "STEP 1 OF 4", right: "YOUR STORY" },
+  q7: { left: "STEP 1 OF 4", right: "YOUR STORY" },
+  q9: { left: "STEP 1 OF 4", right: "YOUR STORY" },
+  q10: { left: "STEP 1 OF 4", right: "YOUR STORY" },
+  q11: { left: "STEP 1 OF 4", right: "YOUR STORY" },
+  ktw: { left: "STEP 2 OF 4", right: "KNEE-TO-WALL" },
+  hr: { left: "STEP 3 OF 4", right: "HEEL RAISE" },
+  footprint: { left: "STEP 4 OF 4", right: "FOOTPRINT" },
+  shoes: { left: "STEP 4 OF 4", right: "FOOTWEAR" },
+  save: { left: "ALL STEPS DONE", right: "100%" },
+};
+
+/** Human step label for the progressbar's accessible name. */
+const STEP_TITLES: Record<ScreenId, string> = {
+  intro: "Before we start",
+  q1: "Before we start",
+  q2: "Before we start",
+  q3: "Before we start",
+  q4: "Before we start",
+  q5: "Your story",
+  q6: "Your story",
+  q7: "Your story",
+  q9: "Your story",
+  q10: "Your story",
+  q11: "Your story",
+  ktw: "Knee-to-wall test",
+  hr: "Single-leg heel raise",
+  footprint: "Foot & footwear",
+  shoes: "Foot & footwear",
   save: "Done",
 };
 
@@ -282,21 +304,17 @@ export default function Wizard() {
     next();
   }
 
-  const stepLabel = STEP_LABELS[current];
-  const showBack = screen > 0 && current !== "save";
+  const progress = PROGRESS_LABELS[current];
 
   const body = useMemo(() => {
     switch (current) {
       case "intro":
         return (
           <div>
+            <div class="intro-mark" aria-hidden="true" />
             <h2>{step0.title}</h2>
-            <MdP text={step0.intro} />
-            <div class="stack-actions">
-              <button type="button" class="btn btn--primary" onClick={next}>
-                Begin
-              </button>
-            </div>
+            <MdP text={step0.intro} class="wizard-lede" />
+            <WizardActions onContinue={next} continueLabel="Begin" />
           </div>
         );
 
@@ -308,6 +326,7 @@ export default function Wizard() {
             value={draft.painLocation}
             onChange={(v) => setDraft({ ...draft, painLocation: v })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -320,6 +339,7 @@ export default function Wizard() {
             noneSelected={false}
             onChange={(values) => setDraft({ ...draft, worstWhen: values })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -331,6 +351,7 @@ export default function Wizard() {
             value={draft.thumbPress}
             onChange={(v) => setDraft({ ...draft, thumbPress: v })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -347,19 +368,21 @@ export default function Wizard() {
               setDraft({ ...draft, redFlags: values, redFlagsNone: none })
             }
             onContinue={continueFromQ4}
+            onBack={back}
           />
         );
 
       case "q5":
         return (
           <div>
-            <MdP text={step1.intro} />
+            <MdP text={step1.intro} class="wizard-lede" />
             <SingleChoice
               question={step1.q5.question}
               options={step1.q5.options as readonly Option<Duration>[]}
               value={draft.duration}
               onChange={(v) => setDraft({ ...draft, duration: v })}
               onContinue={next}
+              onBack={back}
             />
           </div>
         );
@@ -376,6 +399,7 @@ export default function Wizard() {
               setDraft({ ...draft, loadChanges: values, loadNone: none })
             }
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -387,6 +411,7 @@ export default function Wizard() {
             value={draft.onFeet}
             onChange={(v) => setDraft({ ...draft, onFeet: v })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -399,6 +424,7 @@ export default function Wizard() {
             value={draft.bmiBand}
             onChange={(v) => setDraft({ ...draft, bmiBand: v })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -410,6 +436,7 @@ export default function Wizard() {
             value={draft.ageBand}
             onChange={(v) => setDraft({ ...draft, ageBand: v })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -421,6 +448,7 @@ export default function Wizard() {
             value={draft.affectedFoot}
             onChange={(v) => setDraft({ ...draft, affectedFoot: v })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -432,6 +460,7 @@ export default function Wizard() {
             prev={prev?.kneeToWall}
             onChange={(kneeToWall) => setDraft({ ...draft, kneeToWall })}
             onContinue={next}
+            onBack={back}
           />
         );
 
@@ -461,6 +490,7 @@ export default function Wizard() {
               value={draft.footprint}
               onChange={(v) => setDraft({ ...draft, footprint: v })}
               onContinue={next}
+              onBack={back}
             />
           </div>
         );
@@ -517,16 +547,12 @@ export default function Wizard() {
                 </label>
               ))}
             </fieldset>
-            <div class="stack-actions">
-              <button
-                type="button"
-                class="btn btn--primary"
-                disabled={!done}
-                onClick={() => finish(finished)}
-              >
-                Finish
-              </button>
-            </div>
+            <WizardActions
+              onBack={back}
+              onContinue={() => finish(finished)}
+              continueLabel="Finish"
+              disabled={!done}
+            />
           </div>
         );
       }
@@ -534,15 +560,33 @@ export default function Wizard() {
       case "save":
         return (
           <div>
-            <MdP text={persistenceNotice.body} />
-            <div class="stack-actions">
-              <a
-                class="btn btn--primary"
-                href={payloadStr ? `/plan#${payloadStr}` : "/plan"}
-              >
-                {persistenceNotice.cta}
-              </a>
+            <div class="done-mark" aria-hidden="true">
+              <svg width="28" height="28" viewBox="0 0 24 24">
+                <path
+                  d="M5 12.5 L10 17.5 L19 6.5"
+                  fill="none"
+                  stroke="var(--mark)"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
             </div>
+            <h2>That's everything. Building your plan.</h2>
+            <p class="wizard-lede">
+              We've run your answers through the engine. Next you'll see your
+              movement profile, your gauges, and the exercises matched to your
+              numbers.
+            </p>
+            <div class="note">
+              <MdP text={persistenceNotice.body} />
+            </div>
+            <a
+              class="btn btn--primary btn--full"
+              href={payloadStr ? `/plan#${payloadStr}` : "/plan"}
+            >
+              {persistenceNotice.cta} →
+            </a>
           </div>
         );
     }
@@ -550,15 +594,14 @@ export default function Wizard() {
 
   return (
     <div>
-      <ProgressRuler current={screen} total={FLOW.length} />
-      <ScreenShell stepLabel={stepLabel}>{body}</ScreenShell>
-      {showBack && (
-        <p style="margin-top:2rem">
-          <button type="button" class="btn btn--quiet" onClick={back}>
-            ← Back
-          </button>
-        </p>
-      )}
+      <ProgressRuler
+        current={screen}
+        total={FLOW.length}
+        leftLabel={progress.left}
+        rightLabel={progress.right}
+        ariaLabel={`${STEP_TITLES[current]} — step ${screen + 1} of ${FLOW.length}`}
+      />
+      {body}
     </div>
   );
 }

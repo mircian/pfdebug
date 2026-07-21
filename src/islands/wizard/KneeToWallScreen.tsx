@@ -7,7 +7,7 @@
 import { useEffect, useRef, useState } from "preact/hooks";
 import Illustration from "~/components/Illustration";
 import { Md } from "~/components/Md";
-import type { Option } from "~/components/QuestionScreens";
+import { WizardActions, type Option } from "~/components/QuestionScreens";
 import { step2 } from "~/copy/copy";
 import type { Sensation, Side } from "~/engine";
 import { lengthsToCm, REFERENCE_OBJECTS } from "~/lib/calibrator";
@@ -136,12 +136,14 @@ export default function KneeToWallScreen({
   prev,
   onChange,
   onContinue,
+  onBack,
 }: {
   units: Units;
   draft: KneeToWallDraft;
   prev?: { left_cm: number; right_cm: number };
   onChange: (d: KneeToWallDraft) => void;
   onContinue: () => void;
+  onBack?: () => void;
 }) {
   const [refId, setRefId] = useState(REFERENCE_OBJECTS[0]!.id);
   const [countText, setCountText] = useState("");
@@ -251,16 +253,7 @@ export default function KneeToWallScreen({
         onSelect={(v) => onChange({ ...draft, sensationRight: v })}
       />
 
-      <div class="stack-actions">
-        <button
-          type="button"
-          class="btn btn--primary"
-          disabled={!complete}
-          onClick={onContinue}
-        >
-          Continue
-        </button>
-      </div>
+      <WizardActions onBack={onBack} onContinue={onContinue} disabled={!complete} />
     </div>
   );
 }

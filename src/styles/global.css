@@ -6,9 +6,17 @@
   --ink: #1f2e35;
   --ink-soft: #5c6b72;
   --mark: #0e7c6b;
+  --mark-dark: #0b5f52; /* mark hover / pressed */
+  --mark-tint: #e9f2ef; /* selected fill */
   --flag: #c08a2d;
   --tissue: #b8503e; /* illustrations only */
   --stop: #a6402f; /* the red-flag / referral page only */
+
+  /* Paper-ground neutrals — the instrument's quiet panels & hairlines. */
+  --hairline: #ece9e0; /* header/footer/action rules */
+  --panel: #f4f2eb; /* inset illustration / note wells */
+  --panel-border: #e3e0d7;
+  --body-ink: #3a4a51; /* long-form paragraph text */
 
   --font-display: "Bricolage Grotesque", system-ui, sans-serif;
   --font-body: "Public Sans", system-ui, sans-serif;
@@ -22,7 +30,8 @@
   --text-2xl: 2.076rem;
   --text-3xl: 2.594rem;
 
-  --radius: 6px;
+  --radius: 8px;
+  --radius-sm: 7px;
   --border: 2px solid var(--ink);
   --touch: 48px;
   --maxw: 44rem;
@@ -120,7 +129,7 @@ small,
 /* ---- Header / wordmark ------------------------------------------------- */
 
 .site-header {
-  border-bottom: var(--border);
+  border-bottom: 1px solid var(--hairline);
   background: var(--paper);
   position: sticky;
   top: 0;
@@ -139,12 +148,20 @@ small,
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
   font-family: var(--font-data);
-  font-weight: 500;
-  font-size: 1.25rem;
+  font-weight: 600;
+  font-size: 1.1rem;
   color: var(--ink);
   text-decoration: none;
   letter-spacing: 0.01em;
+}
+
+.wordmark svg {
+  display: block;
+  flex-shrink: 0;
 }
 
 .wordmark:hover {
@@ -182,9 +199,9 @@ small,
   gap: 0.5ch;
   min-height: var(--touch);
   min-width: var(--touch);
-  padding: 0.5rem 1.25rem;
+  padding: 0.75rem 1.25rem;
   border: var(--border);
-  border-radius: var(--radius);
+  border-radius: var(--radius-sm);
   background: var(--paper);
   color: var(--ink);
   font-family: var(--font-body);
@@ -192,11 +209,13 @@ small,
   font-weight: 600;
   cursor: pointer;
   text-decoration: none;
-  transition: background-color 150ms ease;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease;
 }
 
 .btn:hover {
-  background: #f0f0ea;
+  background: #f1efe8;
 }
 
 .btn--primary {
@@ -206,7 +225,8 @@ small,
 }
 
 .btn--primary:hover {
-  background: #0a6357;
+  background: var(--mark-dark);
+  border-color: var(--mark-dark);
 }
 
 .btn--quiet {
@@ -215,9 +235,20 @@ small,
   font-weight: 400;
 }
 
+.btn--full {
+  width: 100%;
+}
+
 .btn[disabled] {
-  opacity: 0.45;
+  opacity: 0.5;
   cursor: not-allowed;
+}
+
+.btn--primary[disabled] {
+  background: var(--panel);
+  border-color: var(--panel-border);
+  color: #8a8880;
+  opacity: 1;
 }
 
 input[type="number"],
@@ -241,36 +272,83 @@ label {
 }
 
 /* Choice lists (radio/checkbox cards). 48px min touch targets — people
-   operate this one-legged, holding a phone. */
+   operate this one-legged, holding a phone. Marks are hand-drawn from the
+   native input via appearance:none, so the control stays a real radio /
+   checkbox (labelled, focusable) while reading as the instrument's tick. */
 .choice {
   display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
+  align-items: center;
+  gap: 0.8rem;
   min-height: var(--touch);
-  padding: 0.65rem 0.9rem;
+  padding: 0.8rem 0.95rem;
   border: var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 0.6rem;
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.65rem;
   cursor: pointer;
   font-weight: 400;
+  font-size: 0.97rem;
+  line-height: 1.4;
   background: var(--paper);
-  transition: background-color 120ms ease;
+  transition:
+    background-color 120ms ease,
+    border-color 120ms ease,
+    box-shadow 120ms ease;
 }
 
 .choice:hover {
-  background: #f0f0ea;
+  background: #f1efe8;
 }
 
 .choice input {
-  width: 1.35rem;
-  height: 1.35rem;
-  margin-top: 0.2rem;
-  accent-color: var(--mark);
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.375rem;
+  height: 1.375rem;
+  margin: 0;
   flex-shrink: 0;
+  border: 2px solid var(--ink-soft);
+  background: transparent;
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease;
+}
+
+.choice input[type="radio"] {
+  border-radius: 50%;
+}
+
+.choice input[type="checkbox"] {
+  border-radius: 5px;
+  position: relative;
+}
+
+.choice input:checked {
+  border-color: var(--mark);
+  background: var(--mark);
+}
+
+/* Radio: solid dot with an inset ring the colour of the selected card. */
+.choice input[type="radio"]:checked {
+  box-shadow: inset 0 0 0 3px var(--mark-tint);
+}
+
+/* Checkbox: a crisp white tick over the filled square. */
+.choice input[type="checkbox"]:checked::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 6px;
+  height: 11px;
+  border: solid var(--paper);
+  border-width: 0 2.4px 2.4px 0;
+  transform: rotate(45deg);
 }
 
 .choice--selected {
-  background: #e7f2ef;
+  background: var(--mark-tint);
   border-color: var(--mark);
 }
 
@@ -314,13 +392,26 @@ label {
 /* ---- Wizard progress = a ruler filling left→right ------------------------ */
 
 .progress-ruler {
-  margin: 1.25rem 0 2rem;
+  margin: 1.25rem 0 1.75rem;
 }
 
 .progress-ruler svg {
   display: block;
   width: 100%;
   height: auto;
+}
+
+.progress-ruler__labels {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.35rem;
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  text-transform: uppercase;
 }
 
 /* ---- Cards / callouts ----------------------------------------------------- */
@@ -344,16 +435,123 @@ label {
   margin: 0 0 1.5rem;
 }
 
+/* Amber safety box (the intro disclaimer / "worth a look" framing) —
+   a band + soft fill, never alarm red. */
+.note--warn {
+  border: 1.5px solid var(--flag);
+  background: #fbf3e3;
+  border-radius: var(--radius-sm);
+  padding: 0.85rem 1rem;
+  color: #6b5320;
+  font-size: var(--text-sm);
+  line-height: 1.5;
+  margin: 0 0 1.5rem;
+}
+
+/* Neutral inset well — reference notes, "saved on this device", helpers. */
+.note {
+  border: 1.5px solid var(--panel-border);
+  background: var(--panel);
+  border-radius: var(--radius);
+  padding: 0.9rem 1rem;
+  color: var(--ink-soft);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  margin: 0 0 1.5rem;
+}
+
+.note strong,
+.note b {
+  color: var(--ink);
+}
+
+.note > p {
+  margin: 0;
+}
+
+.note > p + p {
+  margin-top: 0.6rem;
+}
+
+/* Intro: a tick-square glyph — the measuring-tape motif as a mark. */
+.intro-mark {
+  width: 56px;
+  height: 56px;
+  border: 2.5px solid var(--ink);
+  border-radius: 10px;
+  margin: 0 0 1.25rem;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--ink) 0 2px,
+    transparent 2px 9px
+  );
+  background-position: center;
+  background-size: 100% 18px;
+  background-repeat: no-repeat;
+}
+
+/* Close screen: the completion check. */
+.done-mark {
+  width: 56px;
+  height: 56px;
+  border: 2.5px solid var(--mark);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 1.25rem;
+}
+
+/* The bottom action bar every wizard screen closes on: a hairline rule,
+   then Back (outline) beside a filled primary that takes the rest of the row. */
+.wizard-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: stretch;
+  margin: 1.75rem 0 0;
+  padding-top: 1.1rem;
+  border-top: 1px solid var(--hairline);
+}
+
+.wizard-actions .btn--primary {
+  flex: 1;
+}
+
+/* Long-form wizard paragraphs read a touch softer than headings. */
+.wizard-lede {
+  color: var(--body-ink);
+}
+
 .badge {
   display: inline-block;
   font-family: var(--font-data);
   font-weight: 500;
-  font-size: var(--text-sm);
+  font-size: 0.72rem;
+  letter-spacing: 0.01em;
   color: var(--ink-soft);
-  border: 1px solid var(--ink-soft);
-  border-radius: var(--radius);
-  padding: 0.15rem 0.6rem;
-  margin-right: 0.5rem;
+  border: 1.5px solid var(--ink-soft);
+  border-radius: 4px;
+  padding: 0.25rem 0.55rem;
+  margin: 0 0.4rem 0.4rem 0;
+}
+
+/* Mono eyebrow above hero / section titles. */
+.kicker {
+  font-family: var(--font-data);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin: 0 0 0.9rem;
+}
+
+/* The landing hero's one atmospheric moment — the 15-minute measuring tape. */
+.hero-tape {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.5rem 0 1.25rem;
 }
 
 /* The referral page is the ONLY place --stop appears. */
