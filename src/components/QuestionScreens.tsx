@@ -3,7 +3,6 @@
  * question; explicit Continue (48px targets — people operate this
  * one-legged, holding a phone).
  */
-import type { ComponentChildren } from "preact";
 import { Md } from "~/components/Md";
 
 export interface Option<V extends string> {
@@ -11,17 +10,39 @@ export interface Option<V extends string> {
   label: string;
 }
 
-export function ScreenShell({
-  stepLabel,
-  children,
+/**
+ * The bottom action bar every wizard screen closes on: an optional Back
+ * (outline) beside the primary that takes the rest of the row. Screens with
+ * no way back (the intro, the live heel-raise test) simply omit `onBack`.
+ */
+export function WizardActions({
+  onBack,
+  onContinue,
+  continueLabel = "Continue",
+  disabled = false,
+  backLabel = "Back",
 }: {
-  stepLabel: string;
-  children: ComponentChildren;
+  onBack?: () => void;
+  onContinue: () => void;
+  continueLabel?: string;
+  disabled?: boolean;
+  backLabel?: string;
 }) {
   return (
-    <div>
-      <p class="small data">{stepLabel}</p>
-      {children}
+    <div class="wizard-actions">
+      {onBack && (
+        <button type="button" class="btn" onClick={onBack}>
+          {backLabel}
+        </button>
+      )}
+      <button
+        type="button"
+        class="btn btn--primary"
+        disabled={disabled}
+        onClick={onContinue}
+      >
+        {continueLabel}
+      </button>
     </div>
   );
 }
@@ -33,6 +54,7 @@ export function SingleChoice<V extends string>({
   value,
   onChange,
   onContinue,
+  onBack,
   continueLabel = "Continue",
 }: {
   question: string;
@@ -41,6 +63,7 @@ export function SingleChoice<V extends string>({
   value: V | null;
   onChange: (v: V) => void;
   onContinue: () => void;
+  onBack?: () => void;
   continueLabel?: string;
 }) {
   return (
@@ -71,16 +94,12 @@ export function SingleChoice<V extends string>({
           </span>
         </label>
       ))}
-      <div class="stack-actions">
-        <button
-          type="button"
-          class="btn btn--primary"
-          disabled={value === null}
-          onClick={onContinue}
-        >
-          {continueLabel}
-        </button>
-      </div>
+      <WizardActions
+        onBack={onBack}
+        onContinue={onContinue}
+        continueLabel={continueLabel}
+        disabled={value === null}
+      />
     </fieldset>
   );
 }
@@ -94,6 +113,7 @@ export function MultiChoice<V extends string>({
   noneSelected,
   onChange,
   onContinue,
+  onBack,
   continueLabel = "Continue",
 }: {
   question: string;
@@ -106,6 +126,7 @@ export function MultiChoice<V extends string>({
   noneSelected: boolean;
   onChange: (values: V[], noneSelected: boolean) => void;
   onContinue: () => void;
+  onBack?: () => void;
   continueLabel?: string;
 }) {
   // At least one answer always — the "none" row is the explicit empty answer
@@ -156,16 +177,12 @@ export function MultiChoice<V extends string>({
           <span>{noneLabel}</span>
         </label>
       )}
-      <div class="stack-actions">
-        <button
-          type="button"
-          class="btn btn--primary"
-          disabled={!canContinue}
-          onClick={onContinue}
-        >
-          {continueLabel}
-        </button>
-      </div>
+      <WizardActions
+        onBack={onBack}
+        onContinue={onContinue}
+        continueLabel={continueLabel}
+        disabled={!canContinue}
+      />
     </fieldset>
   );
 }

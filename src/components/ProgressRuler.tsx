@@ -1,37 +1,32 @@
 /**
- * Wizard progress — a ruler filling left→right, minor/major ticks, current
- * step as the tape pointer (BUILD.md §6).
+ * Wizard progress — a measuring tape filling left→right: a hairline baseline
+ * with tick hatching, the covered span re-inked in --mark, and a tape pointer
+ * at the head (BUILD.md §6). Optional mono labels underneath read like the
+ * marks on a real tape (STEP 2 OF 4 · KNEE-TO-WALL).
  */
+
+// Design greys for the unfilled tape — quieter than --ink-soft so the teal
+// fill and pointer stay the eye's anchor.
+const TRACK = "#cbc8bf";
+const TRACK_TICK = "#bdbab1";
 
 export default function ProgressRuler({
   current,
   total,
+  leftLabel,
+  rightLabel,
+  ariaLabel,
 }: {
   current: number;
   total: number;
+  leftLabel?: string;
+  rightLabel?: string;
+  ariaLabel?: string;
 }) {
-  const W = 400;
-  const H = 34;
-  const baseline = 24;
-  const pct = total <= 1 ? 0 : current / (total - 1);
-  const x = pct * W;
-
-  const ticks = [];
-  for (let i = 0; i <= 50; i++) {
-    const tx = (i / 50) * W;
-    const major = i % 5 === 0;
-    ticks.push(
-      <line
-        key={i}
-        x1={tx}
-        y1={baseline}
-        x2={tx}
-        y2={baseline - (major ? 14 : 7)}
-        stroke={tx <= x ? "var(--mark)" : "var(--ink-soft)"}
-        stroke-width={major ? 2 : 1}
-      />,
-    );
-  }
+  const pct = total <= 1 ? 0 : Math.min(1, Math.max(0, current / (total - 1)));
+  const fill = `${(pct * 100).toFixed(2)}%`;
+  const hatch = (color: string) =>
+    `repeating-linear-gradient(90deg, ${color} 0 1px, transparent 1px 15px)`;
 
   return (
     <div
@@ -40,32 +35,26 @@ export default function ProgressRuler({
       aria-valuemin={1}
       aria-valuemax={total}
       aria-valuenow={current + 1}
-      aria-label={`Step ${current + 1} of ${total}`}
+      aria-label={ariaLabel ?? `Step ${current + 1} of ${total}`}
     >
-      <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
-        <line
-          x1="0"
-          y1={baseline}
-          x2={W}
-          y2={baseline}
-          stroke="var(--ink-soft)"
-          stroke-width="1"
+      <div style="position:relative;height:22px" aria-hidden="true">
+        {/* baseline + covered span */}
+        <div style={`position:absolute;left:0;right:0;bottom:8px;height:2px;background:${TRACK}`} />
+        <div style={`position:absolute;left:0;bottom:8px;width:${fill};height:2px;background:var(--mark)`} />
+        {/* tick hatching, grey then re-inked teal over the covered span */}
+        <div style={`position:absolute;left:0;right:0;bottom:8px;height:9px;background:${hatch(TRACK_TICK)}`} />
+        <div style={`position:absolute;left:0;bottom:8px;width:${fill};height:9px;background:${hatch("var(--mark)")}`} />
+        {/* tape pointer at the head of the fill */}
+        <div
+          style={`position:absolute;left:calc(${fill} - 5px);bottom:0;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:7px solid var(--ink)`}
         />
-        <line
-          x1="0"
-          y1={baseline}
-          x2={x}
-          y2={baseline}
-          stroke="var(--mark)"
-          stroke-width="3"
-        />
-        {ticks}
-        {/* tape pointer */}
-        <path
-          d={`M ${x} ${baseline + 2} l -5 8 l 10 0 z`}
-          fill="var(--ink)"
-        />
-      </svg>
+      </div>
+      {(leftLabel || rightLabel) && (
+        <div class="progress-ruler__labels" aria-hidden="true">
+          <span>{leftLabel}</span>
+          <span>{rightLabel}</span>
+        </div>
+      )}
     </div>
   );
 }
